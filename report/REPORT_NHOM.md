@@ -122,11 +122,11 @@ tạo 42 chunks có thể truy vết theo `source_file` và `chunk_index`.
 
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
 |---|-------|-------------------------------|--------------------------|
-| 1 | | | |
-| 2 | | | |
-| 3 | | | |
-| 4 | | | |
-| 5 | | | |
+| 1 | How many units make an undergraduate student full time? | 36 or more units. | `course-registration` |
+| 2 | What must a student do to request a course-time conflict? | Submit in SIO; advisor/instructors approve; accept conditions. | `course-registration` |
+| 3 | What happens on the transcript after a course withdrawal? | A W grade appears. | `course-changes` |
+| 4 | How are undergraduate registration start times assigned? | Last three ID-card digits; four rotating time blocks. | `registration-start-times` |
+| 5 | When must a non-degree staff member submit a petition, and can they receive drop vouchers? | By first day of classes; no Drop Vouchers. | `staff-non-degree-registration` |
 
 Bộ benchmark được định nghĩa có thể chạy lại trong
 `scripts/evaluate_benchmarks.py`:
@@ -145,14 +145,17 @@ Bộ benchmark được định nghĩa có thể chạy lại trong
 
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
 |---|---------|-------------------------------|-------------------------------|---------|
-| 1 | | | | |
-| 2 | | | | |
-| 3 | | | | |
-| 4 | | | | |
-| 5 | | | | |
+| 1 | Full-time units | Heading-aware + Recursive + OpenAI | Có, top-1 | `course-registration`, score 0.5258 |
+| 2 | Course-time conflict | Heading-aware + Recursive + OpenAI | Có, top-1 | `course-registration`, score 0.7587 |
+| 3 | Withdrawal transcript | Heading-aware + Recursive + OpenAI | Có, top-1 | `course-changes`, score 0.6432 |
+| 4 | Undergraduate start times | Heading-aware + Recursive + OpenAI | Có, top-1 | Filter `audience=student`; score 0.7868 |
+| 5 | Staff petition and vouchers | Heading-aware + Recursive + OpenAI | Có, top-1 | `staff-non-degree-registration`, score 0.6542 |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
-> *Viết 2-3 câu:*
+> Có. Q4 dùng `metadata_filter={"audience": "student"}`, loại các tài liệu
+> dành cho faculty/staff trước khi xếp hạng và trả về đúng `registration-start-times`
+> ở top-1. Với corpus lớn hơn hoặc có nội dung giống nhau cho nhiều đối tượng,
+> filter này sẽ giảm nhiễu rõ hơn.
 
 ---
 

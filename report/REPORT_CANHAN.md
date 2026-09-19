@@ -36,32 +36,32 @@ OK
 
 ## 4. Dự đoán similarity
 
-Các giá trị dưới đây được tính bằng `_mock_embed`; chúng minh họa giới hạn của mock backend, không dùng để kết luận chất lượng ngữ nghĩa.
+Các giá trị dưới đây được tính bằng `text-embedding-3-small` của OpenAI.
 
-| Cặp | Dự đoán | Điểm mock | Nhận xét |
+| Cặp | Dự đoán | Điểm thực tế | Nhận xét |
 |---|---|---:|---|
-| SIO registration / SIO registration | cao | -0.1925 | Không đúng kỳ vọng |
-| Late-drop voucher / voucher late drop | cao | 0.0344 | Gần 0, không phân biệt được ý nghĩa |
-| Library loans / start times | thấp | -0.0450 | Đúng hướng nhưng yếu |
-| Withdrawal W / W grade | cao | 0.1288 | Cao hơn một ít nhưng vẫn yếu |
-| Staff petition / staff vouchers | trung bình | -0.0428 | Cùng domain nhưng mock không nhận ra |
+| SIO registration / SIO registration | cao | 0.8900 | Đúng kỳ vọng |
+| Late-drop voucher / voucher late drop | cao | 0.6956 | Đúng kỳ vọng |
+| Library loans / start times | thấp | 0.2396 | Đúng kỳ vọng |
+| Withdrawal W / W grade | cao | 0.6188 | Đúng kỳ vọng |
+| Staff petition / staff vouchers | trung bình | 0.3059 | Cùng domain nhưng khác thông tin |
 
-Điều bất ngờ là các câu gần nghĩa cũng không có điểm cao. Nguyên nhân là mock embedding sinh vector xác định từ toàn bộ chuỗi, gần như ngẫu nhiên theo nghĩa; benchmark chính thức cần local multilingual embedder hoặc API embedding.
+Model phân biệt rõ các cặp gần nghĩa và cặp không liên quan. Cặp về staff có điểm trung bình vì cùng bối cảnh non-degree staff nhưng hỏi hai chính sách khác nhau.
 
 ## 5. Kết quả truy xuất của tôi
 
 Chiến lược thử nghiệm: chia theo heading Markdown, sau đó `RecursiveChunker` với `chunk_size=900`. Script tái lập: `python3 scripts/evaluate_benchmarks.py`.
 
-| # | Query rút gọn | Top-1 doc (mock) | Gold doc trong top-3? | Ghi chú |
+| # | Query rút gọn | Top-1 doc (OpenAI) | Gold doc trong top-3? | Ghi chú |
 |---|---|---|---|---|
-| 1 | full-time units | staff-non-degree-registration | Không | Failure case |
+| 1 | full-time units | course-registration | Có, top-1 | Đúng nguồn |
 | 2 | course-time conflict | course-registration | Có, top-1 | Đúng nguồn |
-| 3 | withdrawal transcript | registration-four-steps | Không | Failure case |
-| 4 | undergraduate start times | course-changes | Có, top-2 | Dùng filter `audience=student` |
+| 3 | withdrawal transcript | course-changes | Có, top-1 | Đúng nguồn |
+| 4 | undergraduate start times | registration-start-times | Có, top-1 | Dùng filter `audience=student` |
 | 5 | staff petition and vouchers | staff-non-degree-registration | Có, top-1 | Đúng nguồn |
 
-**Có chunk liên quan trong top-3:** **3 / 5** với mock backend. Chưa đánh giá điểm agent-answer vì repo không có LLM thật; không nên ghi câu trả lời sinh bởi mock demo là kết quả factual.
+**Có chunk liên quan trong top-3:** **5 / 5** với `text-embedding-3-small`. Chưa đánh giá điểm agent-answer vì repo không có LLM thật; không nên ghi câu trả lời sinh bởi mock demo là kết quả factual.
 
 ## 6. Failure analysis và bước cải thiện
 
-Q1 và Q3 thất bại vì mock embedder không mã hóa ngữ nghĩa. Các chunk đúng tồn tại nhưng không được xếp hạng cao. Bước tiếp theo là chạy lại cùng 5 query bằng `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, so sánh top-3 với baseline và chỉ chấm answer khi LLM được grounding bằng đúng context.
+Mock embedder từng làm Q1 và Q3 thất bại; khi chuyển sang OpenAI, cả hai đều đúng ở top-1. Điều này cho thấy chất lượng embedding ảnh hưởng trực tiếp đến retrieval. Bước tiếp theo, nếu cần điểm agent-answer, là dùng một LLM với prompt grounding và đánh giá câu trả lời dựa trên đúng context.

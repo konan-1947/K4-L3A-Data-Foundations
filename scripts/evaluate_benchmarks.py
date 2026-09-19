@@ -1,15 +1,15 @@
 """Evaluate the university-services corpus against the shared five-query benchmark.
 
-Run with the deterministic lab backend:
-    python3 scripts/evaluate_benchmarks.py
+Run with OpenAI's low-cost embedding model:
+    OPENAI_API_KEY=... EMBEDDING_PROVIDER=openai python3 scripts/evaluate_benchmarks.py
 
-For meaningful Vietnamese/English semantic-quality comparisons, install the
-optional local backend and run with ``EMBEDDING_PROVIDER=local`` after adapting
-the embedder selection in the calling environment.
+Use ``EMBEDDING_PROVIDER=mock`` only for offline code testing.  It is not a
+semantic model and must not be used for the final retrieval score.
 """
 from __future__ import annotations
 
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -18,11 +18,13 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src import Document, EmbeddingStore, RecursiveChunker, _mock_embed
+from dotenv import load_dotenv
+from src import Document, EmbeddingStore, OpenAIEmbedder, RecursiveChunker, _mock_embed
 
 
 CORPUS_DIR = ROOT / "data" / "university_services"
 OUTPUT_PATH = ROOT / "report" / "benchmark_results.json"
+load_dotenv(ROOT / ".env", override=False)
 
 BENCHMARKS = [
     {
@@ -80,8 +82,19 @@ def chunk_by_heading(content: str, chunk_size: int = 900) -> list[str]:
     return [chunk for section in sections for chunk in recursive.chunk(section) if chunk.strip()]
 
 
+def select_embedder():
+    provider = os.getenv("EMBEDDING_PROVIDER", "mock").strip().lower()
+    if provider == "openai":
+        if not os.getenv("OPENAI_API_KEY"):
+            raise RuntimeError("OPENAI_API_KEY is required when EMBEDDING_PROVIDER=openai")
+        return OpenAIEmbedder(model_name=os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"))
+    if provider == "mock":
+        return _mock_embed
+    raise ValueError("EMBEDDING_PROVIDER must be 'openai' or 'mock'")
+
+
 def build_store() -> EmbeddingStore:
-    store = EmbeddingStore(collection_name="university_services", embedding_fn=_mock_embed)
+    store = EmbeddingStore(collection_name="university_services", embedding_fn=select_embedder())
     documents = []
     for path in sorted(CORPUS_DIR.glob("*.md")):
         metadata, content = parse_markdown(path)
@@ -114,7 +127,7 @@ def main() -> None:
             ],
         })
     OUTPUT_PATH.write_text(json.dumps(results, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"Stored {store.get_collection_size()} heading-aware chunks.")
+    print(f"Stored {store.get_collection_size()} heading-aware chunks using {os.getenv('EMBEDDING_PROVIDER', 'mock')} embeddings.")
     print(f"Wrote {len(results)} benchmark results to {OUTPUT_PATH.relative_to(ROOT)}")
 
 

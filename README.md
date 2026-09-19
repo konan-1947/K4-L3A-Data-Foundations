@@ -84,6 +84,18 @@ PY
 export OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```
 
+### Chạy benchmark corpus đại học bằng OpenAI
+
+Sau khi đặt `OPENAI_API_KEY` trong môi trường hoặc file `.env`, chạy:
+
+```bash
+EMBEDDING_PROVIDER=openai python3 scripts/evaluate_benchmarks.py
+```
+
+Script dùng mặc định `text-embedding-3-small`, ghi top-3 retrieval của 5 câu
+hỏi vào `report/benchmark_results.json`. Dùng `EMBEDDING_PROVIDER=mock` chỉ để
+kiểm tra offline, không dùng kết quả đó để đánh giá chất lượng retrieval.
+
 ### 4) Tùy chọn: Trình nhúng Gemini (Google Gemini embedder)
 
 Dùng khi bạn không có OpenAI API key — Gemini API key lấy miễn phí tại [aistudio.google.com](https://aistudio.google.com/apikey), có hạn mức free tier đủ dùng cho lab.
