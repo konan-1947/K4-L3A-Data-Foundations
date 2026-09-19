@@ -1,6 +1,6 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** 2A
+**Nhóm:** Akatsuki
 **Thành viên:**
 - Vũ Đình Đăng — 2A202602946
 - Nguyễn Chí Công — 2A202602634

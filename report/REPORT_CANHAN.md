@@ -1,7 +1,7 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
 **Họ tên:** Vũ Đình Đăng — 2A202602946
-**Nhóm:** 2A
+**Nhóm:** Akatsuki
 **Ngày:** 2026-09-19
 
 ## 1. Khởi động
