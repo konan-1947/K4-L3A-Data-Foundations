@@ -89,13 +89,13 @@ tạo 42 chunks có thể truy vết theo `source_file` và `chunk_index`.
 > Mỗi thành viên điền một khối dưới đây (copy thêm nếu nhóm có nhiều hơn 3 người).
 
 **Thành viên 1 — Vũ Đình Đăng (2A202602946)**
-- **Loại chiến lược:** [Cần xác nhận chiến lược đã chạy]
-- **Mô tả & lý do chọn:** [Cần bổ sung kết quả thực nghiệm cá nhân]
-
-**Thành viên 2 — Nguyễn Chí Công (2A202602634)**
 - **Loại chiến lược:** Heading-aware + `RecursiveChunker(chunk_size=900)`
 - **Mô tả & lý do chọn:** Tách theo heading giữ các bước/quy định trong cùng mục Markdown; section quá dài được tách tiếp theo paragraph/câu.
 - **Code:** `scripts/evaluate_benchmarks.py:chunk_by_heading`.
+
+**Thành viên 2 — Nguyễn Chí Công (2A202602634)**
+- **Loại chiến lược:** [Cần xác nhận chiến lược đã chạy]
+- **Mô tả & lý do chọn:** [Cần bổ sung kết quả thực nghiệm cá nhân]
 
 **Thành viên 3 — Hoàng Trung Anh (2A202602521)**
 - **Loại chiến lược:** [Cần xác nhận chiến lược đã chạy]

@@ -1,6 +1,6 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
-**Họ tên:** Nguyễn Chí Công — 2A202602634
+**Họ tên:** Vũ Đình Đăng — 2A202602946
 **Nhóm:** 2A
 **Ngày:** 2026-09-19
 
