@@ -1,0 +1,135 @@
+[
+  {
+    "id": "q1",
+    "query": "How many units make an undergraduate student full time?",
+    "gold_answer": "An undergraduate is full time at 36 or more units.",
+    "source_doc_id": "course-registration",
+    "retrieved": [
+      {
+        "rank": 1,
+        "score": 0.2728,
+        "doc_id": "staff-non-degree-registration",
+        "preview": "## Important deadlines  Staff non-degree students follow the Academic Calendar. To receive a tuition adjustment, they must drop a course before the add/drop deadline. They do not receive Drop Vouchers."
+      },
+      {
+        "rank": 2,
+        "score": 0.1863,
+        "doc_id": "course-changes",
+        "preview": "# Course Adds Drops and Withdrawals  Listed below is a timeline and instructions for making course changes, including adds, drops, withdrawals and pass/no pass (P/NP) elections, as well as instructions for using vouchers to either drop a co"
+      },
+      {
+        "rank": 3,
+        "score": 0.1468,
+        "doc_id": "staff-non-degree-registration",
+        "preview": "## Petition and registration process  Staff members must read the Faculty/Staff Non-Degree Guide and submit a Faculty/Staff Non-Degree Petition by the first day of classes for each semester of enrollment. Current staff do not need to submit"
+      }
+    ]
+  },
+  {
+    "id": "q2",
+    "query": "What must a student do to request a course-time conflict?",
+    "gold_answer": "Submit a Course Time Conflict Request in SIO; the advisor and both instructors must approve, then the student accepts the conditions.",
+    "source_doc_id": "course-registration",
+    "retrieved": [
+      {
+        "rank": 1,
+        "score": 0.2665,
+        "doc_id": "course-registration",
+        "preview": "Students who wish to register for two course sections with overlapping meeting times must submit a Course Time Conflict Request through Student Information Online (SIO). Approval does not guarantee registration; students must still meet pre"
+      },
+      {
+        "rank": 2,
+        "score": 0.2189,
+        "doc_id": "staff-non-degree-registration",
+        "preview": "## Staff tuition benefits  Staff members should confirm eligibility through the Human Resources Tuition Benefits for Staff webpage and obtain supervisor permission before applying for tuition benefits. Applications should be submitted after"
+      },
+      {
+        "rank": 3,
+        "score": 0.2099,
+        "doc_id": "course-changes",
+        "preview": "After the consultation, the primary academic advisor will enter the voucher into the Student Services Suite (S3), indicating that it will be used for either a course drop or a pass/no pass election.  The student will receive an email notifi"
+      }
+    ]
+  },
+  {
+    "id": "q3",
+    "query": "What happens on the transcript after a course withdrawal?",
+    "gold_answer": "A W grade appears on the transcript.",
+    "source_doc_id": "course-changes",
+    "retrieved": [
+      {
+        "rank": 1,
+        "score": 0.1927,
+        "doc_id": "registration-four-steps",
+        "preview": "Step 4: Register for Classes  Click the Registration button on your SIO homepage or select Registration from the Course Schedule tab  When your registration start time begins, use the gear wheels to register, drop, switch and manage your wa"
+      },
+      {
+        "rank": 2,
+        "score": 0.1814,
+        "doc_id": "registration-four-steps",
+        "preview": "Navigate to the SIO Registration page under the Course Schedule tab to view your registration start time. Remember, your start time is when you can begin registering for courses, you can continue registering until the start of the next seme"
+      },
+      {
+        "rank": 3,
+        "score": 0.1804,
+        "doc_id": "registration-four-steps",
+        "preview": "Class Level, College and Department are correct (if incorrect, please contact your home academic department)  Step 1: Plan Your Course Schedule  Planning Your Schedule  In addition to planning a course schedule in SIO, you may also use the "
+      }
+    ]
+  },
+  {
+    "id": "q4",
+    "query": "How are undergraduate registration start times assigned?",
+    "gold_answer": "They are randomly assigned using the last three digits of the student ID card; students rotate through four time blocks.",
+    "source_doc_id": "registration-start-times",
+    "metadata_filter": {
+      "audience": "student"
+    },
+    "retrieved": [
+      {
+        "rank": 1,
+        "score": 0.2238,
+        "doc_id": "course-changes",
+        "preview": "Minis, Micros, Doctoral Course-Sections & Summer Sessions: View Academic Calendar for deadlines.  PROCESS:  Students can add and drop courses in Student Information Online (SIO) depending on course availability/space and pre- and co-requisi"
+      },
+      {
+        "rank": 2,
+        "score": 0.2157,
+        "doc_id": "registration-start-times",
+        "preview": "Students with closely approaching expected graduation semesters are placed into earlier time assignments on their designated registration day;  Students with higher cumulative units passed are placed earlier in their existing time assignmen"
+      },
+      {
+        "rank": 3,
+        "score": 0.1401,
+        "doc_id": "voucher-process-faq",
+        "preview": "Courses taken pass/no pass only fulfill prerequisite requirements for courses that require a prerequisite grade of D or higher, even if you earned a higher letter grade before converting to pass/no pass."
+      }
+    ]
+  },
+  {
+    "id": "q5",
+    "query": "When must a non-degree staff member submit a petition, and can they receive drop vouchers?",
+    "gold_answer": "They submit the petition by the first day of classes for each semester, and they do not receive Drop Vouchers.",
+    "source_doc_id": "staff-non-degree-registration",
+    "retrieved": [
+      {
+        "rank": 1,
+        "score": 0.2739,
+        "doc_id": "staff-non-degree-registration",
+        "preview": "## Petition and registration process  Staff members must read the Faculty/Staff Non-Degree Guide and submit a Faculty/Staff Non-Degree Petition by the first day of classes for each semester of enrollment. Current staff do not need to submit"
+      },
+      {
+        "rank": 2,
+        "score": 0.2467,
+        "doc_id": "registration-four-steps",
+        "preview": "# Register for Courses in 4 Easy Steps  This page contains step-by-step instructions for course registration at Carnegie Mellon University, including a pre-registration checklist, how to plan and check your course schedule, share with your "
+      },
+      {
+        "rank": 3,
+        "score": 0.2265,
+        "doc_id": "plan-course-schedule",
+        "preview": "# Plan Course Schedule  The University Registrar's Office collects course offerings from our academic departments to create the Schedule of Classes (SOC) each semester. Students may use the Plan Course Schedule feature in Student Informatio"
+      }
+    ]
+  }
+]

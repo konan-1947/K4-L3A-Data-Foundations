@@ -1,128 +1,67 @@
 # Báo Cáo Cá Nhân — Lab 7: Embedding & Vector Store
 
-**Họ tên:** [Tên sinh viên]
-**Nhóm:** [Tên nhóm]
-**Ngày:** [Ngày nộp]
+**Họ tên:** Nguyễn Chí Công — 2A202602634
+**Nhóm:** 2A
+**Ngày:** 2026-09-19
 
-> **Nộp 1 bản / sinh viên.** Phần nhóm (lựa chọn tài liệu, thiết kế chiến lược, bộ câu hỏi đánh giá, demo) nộp chung 1 bản trong `REPORT_NHOM.md`. Chi tiết thang điểm: `docs/SCORING.md`.
+## 1. Khởi động
 
-**Tổng điểm phần cá nhân: 60** = Khởi động (5) + Hướng tiếp cận (10) + Hoàn thiện code (30) + Dự đoán độ tương tự (5) + Kết quả truy xuất của tôi (10).
+### Cosine similarity
 
----
+Cosine similarity đo mức cùng hướng của hai embedding: điểm cao thường nghĩa là hai câu có ý nghĩa gần nhau, còn điểm thấp hoặc âm nghĩa là ít liên quan. Ví dụ cao: “Students use SIO to register for classes” và “A student registers for courses in SIO”. Ví dụ thấp: “The library lends books to students” và “Registration start times use student ID digits”.
 
-## 1. Khởi động (Warm-up) — Cá nhân (5 điểm)
+Cosine phù hợp hơn Euclidean distance vì nó tập trung vào hướng/ý nghĩa tương đối của vector và ít bị ảnh hưởng bởi độ lớn embedding hoặc độ dài câu.
 
-### Độ tương tự Cosine (Cosine Similarity) (Bài tập 1.1)
+### Bài toán chunking
 
-**Độ tương tự cosine cao (High cosine similarity) nghĩa là gì?**
-> *Viết 1-2 câu:*
+Với `chunk_size=500`, `overlap=50`: `ceil((10000 - 50) / (500 - 50)) = ceil(9950 / 450) = 23` chunks. Với `overlap=100`: `ceil(9900 / 400) = 25` chunks. Overlap lớn hơn tạo thêm chunks nhưng giữ ngữ cảnh xuyên ranh giới tốt hơn.
 
-**Ví dụ có độ tương tự CAO:**
-- Câu A:
-- Câu B:
-- Tại sao tương đồng:
+## 2. Hướng tiếp cận của tôi
 
-**Ví dụ có độ tương tự THẤP:**
-- Câu A:
-- Câu B:
-- Tại sao khác:
+- `SentenceChunker` dùng regex `(?<=[.!?])\s+`, giữ dấu kết câu và gom tối đa số câu được cấu hình; văn bản rỗng trả về danh sách rỗng.
+- `RecursiveChunker` ưu tiên `\n\n`, `\n`, `. `, khoảng trắng và cuối cùng cắt theo ký tự. Khi một đoạn còn quá dài, hàm gọi đệ quy với separator tiếp theo.
+- `EmbeddingStore` lưu record trong bộ nhớ gồm content, embedding, metadata và id. Search nhúng query, chấm dot product, rồi sắp xếp giảm dần.
+- `search_with_filter` lọc metadata trước khi xếp hạng; `delete_document` xóa mọi record có cùng `metadata.doc_id`.
+- `KnowledgeBaseAgent` lấy top-k chunks, gắn chúng vào prompt có Context và Question, sau đó gọi hàm LLM được truyền vào.
 
-**Tại sao độ tương tự cosine (cosine similarity) được ưu tiên hơn khoảng cách Euclid (Euclidean distance) cho text embeddings?**
-> *Viết 1-2 câu:*
+## 3. Hoàn thiện code
 
-### Bài toán tính toán Chunking (Bài tập 1.2)
-
-**Tài liệu 10,000 ký tự, chunk_size=500, overlap=50. Bao nhiêu chunks?**
-> *Trình bày phép tính:*
-> *Đáp án:*
-
-**Nếu độ chồng chéo (overlap) tăng lên 100, số lượng chunk thay đổi thế nào? Tại sao muốn độ chồng chéo nhiều hơn?**
-> *Viết 1-2 câu:*
-
----
-
-## 2. Hướng tiếp cận của tôi (My Approach) — Cá nhân (10 điểm)
-
-Giải thích cách tiếp cận của bạn khi lập trình (implement) các phần chính trong gói `src`.
-
-### Các hàm chia nhỏ (Chunking Functions)
-
-**`SentenceChunker.chunk`** — hướng tiếp cận:
-> *Viết 2-3 câu: dùng biểu thức chính quy (regex) gì để phát hiện câu? Xử lý trường hợp ngoại lệ (edge case) nào?*
-
-**`RecursiveChunker.chunk` / `_split`** — hướng tiếp cận:
-> *Viết 2-3 câu: thuật toán hoạt động thế nào? Base case (trường hợp cơ sở) là gì?*
-
-### Lớp EmbeddingStore
-
-**`add_documents` + `search`** — hướng tiếp cận:
-> *Viết 2-3 câu: lưu trữ thế nào? Tính độ tương tự ra sao?*
-
-**`search_with_filter` + `delete_document`** — hướng tiếp cận:
-> *Viết 2-3 câu: lọc (filter) trước hay sau? Xóa bằng cách nào?*
-
-### Tác tử KnowledgeBaseAgent
-
-**`answer`** — hướng tiếp cận:
-> *Viết 2-3 câu: cấu trúc prompt? Cách đưa ngữ cảnh (inject context) vào thế nào?*
-
----
-
-## 3. Hoàn thiện code (Core Implementation) — Cá nhân (30 điểm)
-
-Vượt qua bộ kiểm thử là điều kiện tính điểm phần này.
-
-### Kết Quả Kiểm Thử (Test Results)
-
-```
-# Dán kết quả (output) của: pytest tests/ -v
+```text
+python3 -m unittest tests/test_solution.py -q
+Ran 42 tests in 0.004s
+OK
 ```
 
-**Số lượng bài test vượt qua (pass):** __ / 42
+**Số lượng bài test vượt qua:** **42 / 42**.
 
----
+## 4. Dự đoán similarity
 
-## 4. Dự đoán độ tương tự (Similarity Predictions) — Cá nhân (5 điểm)
+Các giá trị dưới đây được tính bằng `_mock_embed`; chúng minh họa giới hạn của mock backend, không dùng để kết luận chất lượng ngữ nghĩa.
 
-| Cặp | Câu A | Câu B | Dự đoán | Điểm thực tế | Đúng? |
-|------|-----------|-----------|---------|--------------|-------|
-| 1 | | | cao / thấp | | |
-| 2 | | | cao / thấp | | |
-| 3 | | | cao / thấp | | |
-| 4 | | | cao / thấp | | |
-| 5 | | | cao / thấp | | |
+| Cặp | Dự đoán | Điểm mock | Nhận xét |
+|---|---|---:|---|
+| SIO registration / SIO registration | cao | -0.1925 | Không đúng kỳ vọng |
+| Late-drop voucher / voucher late drop | cao | 0.0344 | Gần 0, không phân biệt được ý nghĩa |
+| Library loans / start times | thấp | -0.0450 | Đúng hướng nhưng yếu |
+| Withdrawal W / W grade | cao | 0.1288 | Cao hơn một ít nhưng vẫn yếu |
+| Staff petition / staff vouchers | trung bình | -0.0428 | Cùng domain nhưng mock không nhận ra |
 
-**Kết quả nào bất ngờ nhất? Điều này nói gì về cách embeddings biểu diễn ý nghĩa?**
-> *Viết 2-3 câu:*
+Điều bất ngờ là các câu gần nghĩa cũng không có điểm cao. Nguyên nhân là mock embedding sinh vector xác định từ toàn bộ chuỗi, gần như ngẫu nhiên theo nghĩa; benchmark chính thức cần local multilingual embedder hoặc API embedding.
 
----
+## 5. Kết quả truy xuất của tôi
 
-## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
+Chiến lược thử nghiệm: chia theo heading Markdown, sau đó `RecursiveChunker` với `chunk_size=900`. Script tái lập: `python3 scripts/evaluate_benchmarks.py`.
 
-Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
+| # | Query rút gọn | Top-1 doc (mock) | Gold doc trong top-3? | Ghi chú |
+|---|---|---|---|---|
+| 1 | full-time units | staff-non-degree-registration | Không | Failure case |
+| 2 | course-time conflict | course-registration | Có, top-1 | Đúng nguồn |
+| 3 | withdrawal transcript | registration-four-steps | Không | Failure case |
+| 4 | undergraduate start times | course-changes | Có, top-2 | Dùng filter `audience=student` |
+| 5 | staff petition and vouchers | staff-non-degree-registration | Có, top-1 | Đúng nguồn |
 
-| # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
-|---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+**Có chunk liên quan trong top-3:** **3 / 5** với mock backend. Chưa đánh giá điểm agent-answer vì repo không có LLM thật; không nên ghi câu trả lời sinh bởi mock demo là kết quả factual.
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** __ / 5
+## 6. Failure analysis và bước cải thiện
 
-**Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
-> *Viết 2-3 câu:*
-
----
-
-## Tự Đánh Giá (Phần Cá Nhân)
-
-| Tiêu chí | Điểm tự đánh giá |
-|----------|-------------------|
-| Khởi động (Warm-up) | / 5 |
-| Hướng tiếp cận của tôi (My Approach) | / 10 |
-| Hoàn thiện code (Core Implementation — tests) | / 30 |
-| Dự đoán độ tương tự (Similarity Predictions) | / 5 |
-| Kết quả truy xuất của tôi (Competition Results) | / 10 |
-| **Tổng phần cá nhân** | **/ 60** |
+Q1 và Q3 thất bại vì mock embedder không mã hóa ngữ nghĩa. Các chunk đúng tồn tại nhưng không được xếp hạng cao. Bước tiếp theo là chạy lại cùng 5 query bằng `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`, so sánh top-3 với baseline và chỉ chấm answer khi LLM được grounding bằng đúng context.

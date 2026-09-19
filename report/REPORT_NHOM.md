@@ -1,8 +1,11 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** [Tên nhóm]
-**Thành viên:** [Họ tên từng thành viên]
-**Ngày:** [Ngày nộp]
+**Nhóm:** 2A
+**Thành viên:**
+- Vũ Đình Đăng — 2A202602946
+- Nguyễn Chí Công — 2A202602634
+- Hoàng Trung Anh — 2A202602521
+**Ngày:** 2026-09-19
 
 > **Nộp 1 bản / nhóm.** Phần cá nhân (hướng tiếp cận, kết quả riêng, dự đoán…) mỗi thành viên nộp riêng trong `REPORT_CANHAN.md`. Chi tiết thang điểm: `docs/SCORING.md`.
 
@@ -14,10 +17,15 @@
 
 ### Chủ đề (Domain) & Lý Do Chọn
 
-**Chủ đề:** [ví dụ: Customer support FAQ, Luật Việt Nam, công thức nấu ăn, ...]
+**Chủ đề:** Dịch vụ và quy định đăng ký học phần đại học
 
 **Tại sao nhóm chọn chủ đề này?**
 > *Viết 2-3 câu:*
+
+> Bản nháp dữ liệu đã chuẩn bị: nhóm sử dụng các hướng dẫn công khai của
+> University Registrar (CMU) về đăng ký học phần, lịch đăng ký và thay đổi học
+> phần. Chủ đề có các quy định rõ ràng, truy vết được nguồn và phù hợp để thử
+> metadata `audience`.
 
 ### Danh sách tài liệu (Data Inventory)
 
@@ -29,6 +37,9 @@
 | 4 | | | | | |
 | 5 | | | | | |
 
+Corpus hiện có **9 tài liệu** tại `data/university_services/`; danh mục nguồn,
+ngày lấy và quyền sử dụng nằm trong `data/university_services/sources.csv`.
+
 **Danh sách kiểm tra quản trị dữ liệu (Data governance checklist):**
 - [ ] Tập tài liệu (Corpus) chỉ chứa nguồn công khai/được phép dùng và không chứa dữ liệu cá nhân, thông tin đăng nhập hoặc tài liệu nội bộ.
 - [ ] Mỗi tài liệu có `source_url`, `retrieved_at`, `document_version` (hoặc ngày hiệu lực) trong metadata.
@@ -39,6 +50,11 @@
 |----------------|------|---------------|-------------------------------|
 | | | | |
 | | | | |
+
+Metadata đang dùng: `doc_id`, `title`, `source_url`, `retrieved_at`,
+`document_version`, `audience`, `department`, `category`, `language`.
+`audience` hỗ trợ tách nội dung student/faculty/staff; `category` hỗ trợ giới
+hạn truy xuất theo đăng ký học phần hoặc thay đổi học phần.
 
 ---
 
@@ -56,27 +72,34 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 | | SentenceChunker (`by_sentences`) | | | |
 | | RecursiveChunker (`recursive`) | | | |
 
+Kết quả baseline với `chunk_size=900`:
+
+| Tài liệu | Fixed (count/avg) | Sentence (count/avg) | Recursive (count/avg) |
+|---|---:|---:|---:|
+| `course-registration.md` | 5 / 813.0 | 10 / 384.0 | 5 / 771.4 |
+| `course-changes.md` | 9 / 826.9 | 19 / 366.2 | 9 / 779.9 |
+| `registration-four-steps.md` | 6 / 824.2 | 8 / 584.8 | 6 / 780.8 |
+
+Chiến lược bổ sung đã thử: `scripts/evaluate_benchmarks.py` chia theo heading
+Markdown trước, rồi dùng `RecursiveChunker` cho section dài; lần chạy hiện tại
+tạo 42 chunks có thể truy vết theo `source_file` và `chunk_index`.
+
 ### Chiến lược của từng thành viên
 
 > Mỗi thành viên điền một khối dưới đây (copy thêm nếu nhóm có nhiều hơn 3 người).
 
-**Thành viên 1 — [Tên]**
-- **Loại chiến lược:** [FixedSize / Sentence / Recursive / custom]
-- **Mô tả & lý do chọn cho chủ đề này:** *(2-3 câu)*
-- **Code snippet (nếu custom):**
-```python
-# Dán mã nguồn (implementation) vào đây
-```
+**Thành viên 1 — Vũ Đình Đăng (2A202602946)**
+- **Loại chiến lược:** [Cần xác nhận chiến lược đã chạy]
+- **Mô tả & lý do chọn:** [Cần bổ sung kết quả thực nghiệm cá nhân]
 
-**Thành viên 2 — [Tên]**
-- **Loại chiến lược:**
-- **Mô tả & lý do chọn:**
-- **Code snippet (nếu custom):**
+**Thành viên 2 — Nguyễn Chí Công (2A202602634)**
+- **Loại chiến lược:** Heading-aware + `RecursiveChunker(chunk_size=900)`
+- **Mô tả & lý do chọn:** Tách theo heading giữ các bước/quy định trong cùng mục Markdown; section quá dài được tách tiếp theo paragraph/câu.
+- **Code:** `scripts/evaluate_benchmarks.py:chunk_by_heading`.
 
-**Thành viên 3 — [Tên]**
-- **Loại chiến lược:**
-- **Mô tả & lý do chọn:**
-- **Code snippet (nếu custom):**
+**Thành viên 3 — Hoàng Trung Anh (2A202602521)**
+- **Loại chiến lược:** [Cần xác nhận chiến lược đã chạy]
+- **Mô tả & lý do chọn:** [Cần bổ sung kết quả thực nghiệm cá nhân]
 
 ### So Sánh Giữa Các Thành Viên
 
@@ -104,6 +127,17 @@ Chạy `ChunkingStrategyComparator().compare()` trên 2-3 tài liệu:
 | 3 | | | |
 | 4 | | | |
 | 5 | | | |
+
+Bộ benchmark được định nghĩa có thể chạy lại trong
+`scripts/evaluate_benchmarks.py`:
+
+| # | Câu hỏi | Gold answer | Nguồn |
+|---|---|---|---|
+| 1 | How many units make an undergraduate student full time? | 36 or more units. | `course-registration` |
+| 2 | What must a student do to request a course-time conflict? | Submit the request in SIO; advisor and instructors approve; student accepts conditions. | `course-registration` |
+| 3 | What happens on the transcript after a course withdrawal? | A W grade appears. | `course-changes` |
+| 4 | How are undergraduate registration start times assigned? | Randomly from the last three ID-card digits, rotating through four blocks. | `registration-start-times` + `audience=student` |
+| 5 | When must a non-degree staff member submit a petition, and can they receive drop vouchers? | By first day of classes; no Drop Vouchers. | `staff-non-degree-registration` |
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
